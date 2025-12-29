@@ -40,6 +40,14 @@ export class Grid<T> {
         return this.colCount * this.rowCount;
     }
 
+    get allRows() {
+        return this.rows;
+    }
+
+    get allColumns() {
+        return this.columns;
+    }
+
     contains(x: number, y: number): boolean {
         return x >= 0 && x < this.colCount
             && y >= 0 && y < this.rowCount;
@@ -47,8 +55,8 @@ export class Grid<T> {
 
     printGrid(mapping?: (item: T) => string) {
         const useMapping = !!mapping;
-        for (let y = 0; y < this.rowCount; y++) {
-            console.log(this.getRow(y).map(i => useMapping ? mapping(i) : i).join(""));
+        for (let row of this.allRows) {
+            console.log(row.map(i => useMapping ? mapping(i) : i).join(""));
         }
     }
 }
