@@ -1,3 +1,5 @@
+import {eightAround} from "../util.ts";
+
 export class Grid<T> {
     private readonly rows: T[][];
     private readonly columns: T[][];
@@ -53,10 +55,14 @@ export class Grid<T> {
             && y >= 0 && y < this.rowCount;
     }
 
-    printGrid(mapping?: (item: T) => string) {
+    eightAroundContained(x: number, y: number): [x: number, y: number][] {
+        const around = eightAround(x, y);
+        return around.filter(([x, y]) => this.contains(x, y));
+    }
+
+    printGrid(mapping?: (item: T, x: number, y: number) => string) {
         const useMapping = !!mapping;
-        for (let row of this.allRows) {
-            console.log(row.map(i => useMapping ? mapping(i) : i).join(""));
-        }
+        this.allRows.forEach((row, y) =>
+            console.log(row.map((i, x) => useMapping ? mapping(i, x, y) : i).join("")));
     }
 }
