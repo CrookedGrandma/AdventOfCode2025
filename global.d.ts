@@ -5,6 +5,11 @@ declare interface Position {
     y: number;
 }
 
+declare interface RangeT<T = number> {
+    from: T;
+    to: T;
+}
+
 declare interface AStarNode<T> {
     item: T;
     cameFrom?: AStarNode<T>;

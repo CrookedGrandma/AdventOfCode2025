@@ -1,0 +1,5 @@
+679
+
+========== SECOND TASK ==========
+
+just look at the logged size of merged ranges

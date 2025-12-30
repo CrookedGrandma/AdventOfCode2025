@@ -12,11 +12,11 @@ export function intersect<T>(a: T[], b: T[]): T[] {
 }
 
 export function maxBy<T>(arr: T[], fn: (el: T) => number) {
-    return arr.reduce((prev, current) => (prev && fn(prev) > fn(current)) ? prev : current);
+    return arr.reduce((prev, current) => (prev && fn(prev) > fn(current)) ? prev : current, undefined as T);
 }
 
 export function minBy<T>(arr: T[], fn: (el: T) => number) {
-    return arr.reduce((prev, current) => (prev && fn(prev) < fn(current)) ? prev : current);
+    return arr.reduce((prev, current) => (prev && fn(prev) < fn(current)) ? prev : current, undefined as T);
 }
 
 export function sum(arr: number[]) {
@@ -36,15 +36,15 @@ export function isNumber(obj: any): obj is number {
 }
 
 export function isInteger(str: string): number | false {
-    const parsed = parseInt(str);
-    if (isNaN(parsed))
+    const parsed = +str;
+    if (Number.isNaN(parsed) || str === "")
         return false;
     return parsed;
 }
 
 export function assertNotFalsy<T>(obj: T | undefined): T {
     if (!obj)
-        throw Error(`Falsy value asserted to be not falsy: ${obj}`);
+        throw new Error(`Falsy value asserted to be not falsy: ${obj}`);
     return obj;
 }
 
@@ -60,7 +60,7 @@ export function stringToCharDict(str: string): Record<string, number> {
 
 export function leastCommonMultipleArray(arr: number[]): number {
     if (arr.length == 0)
-        throw Error("Empty array passed");
+        throw new Error("Empty array passed");
     arr.sort((a, b) => a - b);
     let multiple = arr[0];
     for (const a of arr.slice(1))
@@ -150,7 +150,7 @@ export function getShortestPathAStar(from: Position, to: Position, neighbours: (
             const path: Position[] = [];
             const endNode = explored.find(p => positionsEqual(p.item, to));
             if (!endNode)
-                throw Error("something's up");
+                throw new Error("something's up");
             let node = endNode;
             while (node.cameFrom) {
                 path.splice(0, 0, node.item);
@@ -180,7 +180,7 @@ export function getShortestPathAStar(from: Position, to: Position, neighbours: (
         }
     }
 
-    throw Error("no path found");
+    throw new Error("no path found");
 }
 
 export function positionsEqual(a: Position, b: Position) {
@@ -225,4 +225,29 @@ export function swapPositions<T>(array: T[], i1: number, i2: number) {
     const e1 = removeAt(array, i1);
     insertAt(array, e2, i1);
     insertAt(array, e1, i2);
+}
+
+export function compareRanges(a: RangeT, b: RangeT) {
+    if (a.from !== b.from)
+        return a.from - b.from;
+    return a.to - b.to;
+}
+
+export function mergeRanges(ranges: RangeT[]) {
+    if (ranges.length === 0)
+        return [];
+
+    const sorted = ranges.toSorted(compareRanges);
+    const merged: RangeT[] = [sorted[0]];
+
+    for (let i = 1; i < sorted.length; i++) {
+        const lastMerged = merged.at(-1)!;
+        const curr = sorted[i];
+
+        if (curr.from <= lastMerged.to)
+            lastMerged.to = Math.max(lastMerged.to, curr.to);
+        else
+            merged.push(curr);
+    }
+    return merged;
 }

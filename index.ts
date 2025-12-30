@@ -1,10 +1,12 @@
-import fs from "fs";
+import fs from "node:fs";
 import {Handler} from "./handler.ts";
 
 const USE_EXAMPLE = false;
 
-const handlerNames = fs.readdirSync("handlers/").sort((a, b) => parseInt(a) - parseInt(b));
-const latestHandlerName = handlerNames[handlerNames.length - 1];
+const handlerNames = fs.readdirSync("handlers/").sort((a, b) => +a - +b);
+if (handlerNames.length === 0)
+    throw new Error("No handlers found");
+const latestHandlerName = handlerNames.at(-1)!;
 const handlerNumber = latestHandlerName.split(".")[0] + (USE_EXAMPLE ? "E" : "");
 
 console.log(`CHALLENGE NUMBER: ${handlerNumber}\n`);
