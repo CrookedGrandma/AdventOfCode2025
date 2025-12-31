@@ -11,10 +11,12 @@ const handlerNumber = latestHandlerName.split(".")[0] + (USE_EXAMPLE ? "E" : "")
 
 console.log(`CHALLENGE NUMBER: ${handlerNumber}\n`);
 
-const input = fs.readFileSync(`input/${handlerNumber}.txt`).toString().split("\n").map(l => l.trim());
+const input = fs.readFileSync(`input/${handlerNumber}.txt`).toString().split("\n");
+const trimmedInput = input.map(l => l.trim());
 
 console.log("constructing...\n")
-const handler = new(Object.values(await import(`./handlers/${latestHandlerName}`))[0] as new(input: string[]) => Handler)(input);
+const foundClass = Object.values(await import(`./handlers/${latestHandlerName}`))[0] as (new(input: string[]) => Handler) & typeof Handler;
+const handler = new foundClass(foundClass.TrimInputLines ? trimmedInput : input);
 
 console.log("\nstarting...\n")
 const outputA = handler.runA(input);

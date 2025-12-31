@@ -23,6 +23,14 @@ export function sum(arr: number[]) {
     return arr.reduce((total, next) => total + next, 0);
 }
 
+export function product(arr: number[]) {
+    return arr.reduce((total, next) => total * next, 1);
+}
+
+export function distinct<T>(arr: T[]): T[] {
+    return arr.filter((el, i) => arr.indexOf(el) === i);
+}
+
 export function indicesOf(needle: string, haystack: string) {
     const indices = [];
     for (let i = 0; i < haystack.length; i++)
